@@ -12,4 +12,4 @@ logs:
 	docker-compose logs --tail 30 -f elevator
 
 test:
-	docker-compose run elevator pytest -v tests/test_elevator.py
+	docker-compose run elevator pytest -v tests
