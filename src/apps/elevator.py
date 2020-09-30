@@ -255,7 +255,6 @@ class Elevator:
                 self.current_floor -= 1
 
                 self.status = Elevator.MOVING_DOWN
-                time.sleep(STEP_EXECUTE_TIME)
                 break
             elif step == 'CLOSE_DOOR':
                 if self.status == Elevator.MOVING_DOWN:
@@ -264,13 +263,7 @@ class Elevator:
                     self.requests.clear_up(self.current_floor)
 
                 self.requests.clear_stop(self.current_floor)
-
-                time.sleep(STEP_EXECUTE_TIME)
                 break
-            elif step == 'OPEN_DOOR':
-                time.sleep(STEP_EXECUTE_TIME)
-
-        return True
 
     def get_commands(self):
         """Get the command from the controller

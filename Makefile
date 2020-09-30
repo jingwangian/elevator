@@ -1,11 +1,11 @@
 build:
 	docker-compose build
 
-up:
+start:
 	docker-compose up -d redis-db elevator controller
 	docker-compose logs -f elevator
 
-down:
+stop:
 	docker-compose stop
 
 logs:

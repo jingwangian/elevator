@@ -64,7 +64,7 @@ make build
 Run the following command to start the project
 
 ```bash
-make up
+make start
 ```
 
 ## Stop
