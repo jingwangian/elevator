@@ -1,19 +1,9 @@
-import json
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
-
 from dash.dependencies import Input, Output
+import dash
+import dash_html_components as html
 import dash_bootstrap_components as dbc
-from dash.exceptions import PreventUpdate
+
 from apps.message import MessageQueue
-
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = dash.Dash(__name__, external_stylesheets=[
-                dbc.themes.BOOTSTRAP, 'assets/app.css'])
-
-server = app.server
 
 message_queue = MessageQueue()
 
@@ -111,14 +101,3 @@ class Controller:
             }
         )
 
-
-def main():
-    controller = Controller(app)
-
-    app.layout = controller.layout()
-    controller.callbacks()
-    app.run_server(debug=True, host='0.0.0.0')
-
-
-if __name__ == '__main__':
-    main()

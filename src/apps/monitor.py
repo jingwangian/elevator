@@ -8,11 +8,6 @@ from dash.exceptions import PreventUpdate
 
 from apps.message import MessageQueue
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = dash.Dash(__name__, external_stylesheets=[
-                dbc.themes.BOOTSTRAP, 'assets/app.css'])
-
 queue = MessageQueue()
 
 
@@ -114,15 +109,3 @@ class Monitor:
                 return door_open, not door_open, data['floor'], data['action']
             else:
                 raise PreventUpdate
-
-
-def main():
-    monitor = Monitor(app)
-
-    app.layout = monitor.layout()
-    monitor.callbacks()
-    app.run_server(debug=True, host='0.0.0.0')
-
-
-if __name__ == '__main__':
-    main()

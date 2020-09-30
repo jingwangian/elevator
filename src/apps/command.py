@@ -6,10 +6,11 @@ class Request:
         self.floor = floor_number
         self.request_type = request_type
 
-class CommandList:
-    """Keep each floor's state
 
-    The state for each floor includes:
+class CommandList:
+    """Keep all the command for the elevator
+
+    The command for each floor includes:
         STOP: People want to stop at that floor
         UP: People want to pickup at that floor and go up
         DOWN: People want to pickup at that floor and go down

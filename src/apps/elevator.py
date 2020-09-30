@@ -45,6 +45,9 @@ class Elevator:
 
     def request_stop(self, floor_number):
         """People inside elevator select the floor to stop
+
+        Args:
+            floor_number (int): floor number
         """
 
         self.commands.set_stop(floor_number)
@@ -53,7 +56,7 @@ class Elevator:
         """People outside calling elevator to pick up and go down
 
         Args:
-            floor ([type]): [description]
+            floor_number (int): floor number
         """
         self.commands.set_down(floor_number)
 
@@ -61,11 +64,16 @@ class Elevator:
         """People outside calling elevator to pick up and go up
 
         Args:
-            floor ([type]): [description]
+            floor_number (int): floor number
         """
         self.commands.set_up(floor_number)
 
     def notify(self, step):
+        """Send status message to the monitor
+
+        Args:
+            step (string): the action step to be send
+        """
         if not self.enabled_notify:
             return
 
@@ -73,7 +81,7 @@ class Elevator:
         self.queue.send_status(self.current_floor, action, self.status)
 
     def move_one_step(self):
-        """Move one step from step plans and change status
+        """Move one step from steps plan and change the status
         """
 
         steps = self.get_steps()
@@ -118,6 +126,8 @@ class Elevator:
         return True
 
     def get_commands(self):
+        """Get the command from the controller
+        """
         while True:
             result = self.queue.receive_command()
             if not result:
@@ -133,7 +143,7 @@ class Elevator:
                 self.request_down(result['number'])
 
     def run(self):
-        """Move the elevator as the plan
+        """Move the elevator accordint to the steps plan
         """
 
         self.enabled_notify = True
@@ -149,7 +159,7 @@ class Elevator:
 
             self.move_one_step()
 
-    def decide_move_direction(self, start_floor):
+    def decide_move_direction(self):
         """Decide which direction is going firstly
 
         If first request comes from the upper floor, then the elevator will
@@ -172,12 +182,19 @@ class Elevator:
                 self.status = Elevator.MOVING_DOWN
                 return DIRECTION_DOWN
 
-    def get_all_stops(self):
-        stops = self.commands.copy()
-
-        return stops
-
     def up_direction_steps(self, start_floor, commands: CommandList):
+        """Get all steps for the moving up direction from the start floor
+
+        Args:
+            start_floor (int): the floor number from which to move up
+            commands (CommandList): the command list
+
+        Returns:
+            [tuple]: 
+                First is the steps list;
+                Second is the hightest floor number to be arrived
+        """
+
         if commands.is_empty():
             return [], start_floor
 
@@ -212,6 +229,18 @@ class Elevator:
         return plans, hightest_stop_floor
 
     def down_direction_plan(self, start_floor, commands: CommandList):
+        """Get all steps for the moving down direction from the start floor
+
+        Args:
+            start_floor (int): the floor number from which to move down
+            commands (CommandList): the command list
+
+        Returns:
+            [tuple]: 
+                First is the steps list;
+                Second is the lowest floor number to be arrived
+        """
+
         if commands.is_empty():
             return [], start_floor
 
@@ -249,12 +278,13 @@ class Elevator:
         plans = []
         current_floor = self.current_floor
 
+        # make a copy here because we don't really consume the command here
         command_list = self.commands.copy()
 
         if command_list.is_empty():
             return plans
 
-        if self.decide_move_direction(current_floor) == DIRECTION_UP:
+        if self.decide_move_direction() == DIRECTION_UP:
             return_steps, current_floor = self.up_direction_steps(current_floor, command_list)
             plans.extend(return_steps)
             return_steps, current_floor = self.down_direction_plan(current_floor, command_list)
@@ -271,11 +301,3 @@ class Elevator:
 
         assert command_list.is_empty()
         return plans
-
-    def print_steps(self):
-        self.debug = True
-        logger.debug(
-            f'Start from floor: {self.current_floor}, Direction: {self.decide_move_direction(self.current_floor)}')
-        steps = self.get_steps()
-        logger.debug(steps)
-        self.debug = False
