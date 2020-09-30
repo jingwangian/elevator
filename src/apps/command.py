@@ -1,156 +1,150 @@
-from collections import defaultdict
+# from collections import defaultdict
 
 
-class Request:
-    def __init__(self, request_type, floor_number):
-        self.floor = floor_number
-        self.request_type = request_type
+# class FloorRequests:
+#     """Keep all the request for each floors
 
+#     The command for each floor includes:
+#         STOP: People want to stop at that floor
+#         UP: People want to pickup at that floor and go up
+#         DOWN: People want to pickup at that floor and go down
+#     """
 
-class CommandList:
-    """Keep all the command for the elevator
+#     STOP = 'STOP'
+#     UP = 'UP'
+#     DOWN = 'DOWN'
 
-    The command for each floor includes:
-        STOP: People want to stop at that floor
-        UP: People want to pickup at that floor and go up
-        DOWN: People want to pickup at that floor and go down
-    """
+#     def __init__(self):
+#         self.floors = defaultdict(set)
+#         self.number_list = []
 
-    STOP = 'STOP'
-    UP = 'UP'
-    DOWN = 'DOWN'
+#     def __str__(self):
+#         return str(self.floors)
 
-    def __init__(self):
-        self.floors = defaultdict(set)
-        self.requests = []
+#     def set_stop(self, number):
+#         """Set request STOP  state in that floor
+#         """
 
-    def __str__(self):
-        return str(self.floors)
+#         self.floors[number].add(self.STOP)
+#         self.number_list.append(number)
 
-    def set_stop(self, number):
-        """Set request STOP  state in that floor
-        """
+#     def set_up(self, number):
+#         """Set request go up state in that floor
+#         """
 
-        self.floors[number].add(self.STOP)
-        request = Request(self.STOP, number)
-        self.requests.append(request)
+#         self.floors[number].add(self.UP)
+#         self.number_list.append(number)
 
-    def set_up(self, number):
-        """Set request go up state in that floor
-        """
+#     def set_down(self, number):
+#         """Set request go down state in that floor
+#         """
 
-        self.floors[number].add(self.UP)
-        request = Request(self.STOP, number)
-        self.requests.append(request)
+#         self.floors[number].add(self.DOWN)
+#         self.number_list.append(number)
 
-    def set_down(self, number):
-        """Set request go down state in that floor
-        """
+#     def clear_stop(self, number):
+#         """Clear request STOP state in that floor
+#         """
 
-        self.floors[number].add(self.DOWN)
-        request = Request(self.DOWN, number)
-        self.requests.append(request)
+#         if self.STOP in self.floors[number]:
+#             self.floors[number].remove(self.STOP)
 
-    def clear_stop(self, number):
-        """Clear request STOP state in that floor
-        """
+#         if len(self.floors[number]) == 0:
+#             del self.floors[number]
 
-        if self.STOP in self.floors[number]:
-            self.floors[number].remove(self.STOP)
+#     def clear_up(self, number):
+#         """Clear request go up state in that floor
+#         """
 
-        if len(self.floors[number]) == 0:
-            del self.floors[number]
+#         if self.UP in self.floors[number]:
+#             self.floors[number].remove(self.UP)
 
-    def clear_up(self, number):
-        """Clear request go up state in that floor
-        """
+#         if len(self.floors[number]) == 0:
+#             del self.floors[number]
 
-        if self.UP in self.floors[number]:
-            self.floors[number].remove(self.UP)
+#     def clear_down(self, number):
+#         """Clear request go down state in that floor
+#         """
 
-        if len(self.floors[number]) == 0:
-            del self.floors[number]
+#         if self.DOWN in self.floors[number]:
+#             self.floors[number].remove(self.DOWN)
 
-    def clear_down(self, number):
-        """Clear request go down state in that floor
-        """
+#         if len(self.floors[number]) == 0:
+#             del self.floors[number]
 
-        if self.DOWN in self.floors[number]:
-            self.floors[number].remove(self.DOWN)
+#     def has_stop_request_at(self, number):
+#         """Check the specific floor need stop or not
+#         """
 
-        if len(self.floors[number]) == 0:
-            del self.floors[number]
+#         return self.STOP in self.floors[number]
 
-    def has_stop_request_at(self, number):
-        """Check the specific floor need stop or not
-        """
+#     def has_up_request_at(self, number):
+#         """Check the specific floor has pickup and go up request or not
+#         """
 
-        return self.STOP in self.floors[number]
+#         return self.UP in self.floors[number]
 
-    def has_up_request_at(self, number):
-        """Check the specific floor has pickup and go up request or not
-        """
+#     def has_down_request_at(self, number):
+#         """Check the specific floor has pickup and go down request or not
+#         """
 
-        return self.UP in self.floors[number]
+#         return self.DOWN in self.floors[number]
 
-    def has_down_request_at(self, number):
-        """Check the specific floor has pickup and go down request or not
-        """
+#     def has_any_request_at(self, number):
+#         return len(self.floors[number]) > 0
 
-        return self.DOWN in self.floors[number]
+#     def get_highest_floor_number(self):
+#         """Return the highest floor number from all requests
+#         """
 
-    def has_any_request_at(self, number):
-        return len(self.floors[number]) > 0
+#         floor_number_list = []
+#         for floor_number in self.floors.keys():
+#             if self.has_any_request_at(floor_number):
+#                 floor_number_list.append(floor_number)
 
-    def get_highest_floor_number(self):
-        """Return the highest floor number from all requests
-        """
+#         if not floor_number_list:
+#             return -1000
 
-        floor_number_list = []
-        for floor_number in self.floors.keys():
-            if self.has_any_request_at(floor_number):
-                floor_number_list.append(floor_number)
+#         return max(floor_number_list)
+#         # return max([floor_number for floor_number in self.floors.keys() if len(self.floors[floor_number])])
 
-        if not floor_number_list:
-            return -1000
+#     def get_lowest_floor_number(self):
+#         """Return the lowest floor number from all requests
+#         """
 
-        return max(floor_number_list)
-        # return max([floor_number for floor_number in self.floors.keys() if len(self.floors[floor_number])])
+#         floor_number_list = []
+#         for floor_number in self.floors.keys():
+#             if self.has_any_request_at(floor_number):
+#                 floor_number_list.append(floor_number)
 
-    def get_lowest_floor_number(self):
-        """Return the lowest floor number from all requests
-        """
+#         if not floor_number_list:
+#             return 1000
 
-        floor_number_list = []
-        for floor_number in self.floors.keys():
-            if self.has_any_request_at(floor_number):
-                floor_number_list.append(floor_number)
+#         return min(floor_number_list)
 
-        if not floor_number_list:
-            return 1000
+#     def copy(self):
+#         """Return a deep copy of commands
+#         """
 
-        return min(floor_number_list)
+#         commands = FloorRequests()
 
-    def copy(self):
-        """Return a deep copy of commands
-        """
+#         for floor_number in self.floors:
+#             if self.has_up_request_at(floor_number):
+#                 commands.set_up(floor_number)
 
-        commands = CommandList()
+#             if self.has_down_request_at(floor_number):
+#                 commands.set_down(floor_number)
 
-        for floor_number in self.floors:
-            if self.has_up_request_at(floor_number):
-                commands.set_up(floor_number)
+#             if self.has_stop_request_at(floor_number):
+#                 commands.set_stop(floor_number)
 
-            if self.has_down_request_at(floor_number):
-                commands.set_down(floor_number)
+#         return commands
 
-            if self.has_stop_request_at(floor_number):
-                commands.set_stop(floor_number)
+#     def is_empty(self):
+#         return len([floor for floor in self.floors if len(self.floors[floor])]) == 0
 
-        return commands
+#     def clear(self):
+#         self.number_list = []
 
-    def is_empty(self):
-        return len([floor for floor in self.floors if len(self.floors[floor])]) == 0
-
-    def clear_requests(self):
-        self.requests = []
+#     def all(self):
+#         return self.number_list
