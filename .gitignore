@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+*.code-workspace
+.vscode
+
+t1.py
+*.pptx

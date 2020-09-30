@@ -1,0 +1,54 @@
+version: "3.5"
+services:
+  ##############################################
+  # redis
+  redis-db:
+    image: redis:6.0.8-buster
+    ports:
+      - 6379:6379
+
+  ##############################################
+  # redis-admin
+  redis-admin:
+    image: redislabs/redisinsight
+    environment:
+      - REDIS_HOSTS=redis-db
+    ports:
+      - 8001:8001
+    restart: unless-stopped
+
+  ##############################################
+  # elevator
+  elevator:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    image: elevator
+    depends_on:
+      - redis-db
+    environment:
+        - REDIS_HOSTS=redis-db
+        - WAIT_HOSTS=redis-db:6379
+        - WAIT_HOSTS_TIMEOUT=300
+        - WAIT_SLEEP_INTERVAL=30
+        - WAIT_HOST_CONNECT_TIMEOUT=30
+    command: bash -c "/wait && python3 -u start_elevator.py"
+
+  ##############################################
+  # elevator
+  controller:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    image: controller
+    depends_on:
+      - redis-db
+    environment:
+        - REDIS_HOSTS=redis-db
+        - WAIT_HOSTS=redis-db:6379
+        - WAIT_HOSTS_TIMEOUT=300
+        - WAIT_SLEEP_INTERVAL=30
+        - WAIT_HOST_CONNECT_TIMEOUT=30
+    ports:
+      - 8050:8050
+    command: bash -c "/wait && python3 start_controller.py"
